@@ -1,0 +1,12 @@
+apiVersion: app.srvptt2.online/v1
+kind: Lobby
+metadata:
+  labels:
+    app.kubernetes.io/name: lobby
+    app.kubernetes.io/instance: lobby-sample
+    app.kubernetes.io/part-of: app-controller
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: app-controller
+  name: lobby-sample
+spec:
+  # TODO(user): Add fields here

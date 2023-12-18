@@ -1,0 +1,27 @@
+# permissions for end users to view lobbies.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: lobby-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: app-controller
+    app.kubernetes.io/part-of: app-controller
+    app.kubernetes.io/managed-by: kustomize
+  name: lobby-viewer-role
+rules:
+- apiGroups:
+  - app.srvptt2.online
+  resources:
+  - lobbies
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - app.srvptt2.online
+  resources:
+  - lobbies/status
+  verbs:
+  - get
