@@ -1,0 +1,83 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{.ObjectMeta.Name}}
+spec:
+  rules:
+    - host: {{.spec.Domain}}
+      http:
+        paths:
+        - backend:
+            service:
+              name: brand-api
+              port:
+                number: 80
+          path: /api/brandcommunication
+          pathType: Prefix
+        - backend:
+            service:
+              name: brand-api
+              port:
+                number: 80
+          path: /api/brandlivechat
+          pathType: Prefix
+        - backend:
+            service:
+              name: brand-api
+              port:
+                number: 80
+          path: /api/brand/maintenance
+          pathType: Prefix
+        - backend:
+            service:
+              name: {{.ObjectMeta.Name}}
+              port:
+                number: 80
+          path: /
+          pathType: Prefix
+        - backend:
+            service:
+              name: operator-api
+              port:
+                number: 80
+          path: /api
+          pathType: Prefix
+    - host: www.{{.spec.Domain}}
+      http:
+        paths:
+        - backend:
+            service:
+              name: brand-api
+              port:
+                number: 80
+          path: /api/brandcommunication
+          pathType: Prefix
+        - backend:
+            service:
+              name: brand-api
+              port:
+                number: 80
+          path: /api/brandlivechat
+          pathType: Prefix
+        - backend:
+            service:
+              name: brand-api
+              port:
+                number: 80
+          path: /api/brand/maintenance
+          pathType: Prefix
+        - backend:
+            service:
+              name: {{.ObjectMeta.Name}}
+              port:
+                number: 80
+          path: /
+          pathType: Prefix
+        - backend:
+            service:
+              name: operator-api
+              port:
+                number: 80
+          path: /api
+          pathType: Prefix
+  ingressClassName: nginx

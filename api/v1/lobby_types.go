@@ -29,12 +29,13 @@ type LobbySpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of Lobby. Edit lobby_types.go to remove/update
-	Image string `json:"image"`
-	Replicas int `json:"replicas"`
-	EnableIngress bool `json:"enable_ingress,omitempty"`
-	EnableService bool `json:"enable_service"`
-	Domain string `json:"domain"`
-	Token string  `json:"token"`
+	Image         string `json:"image"`
+	Replicas      int    `json:"replicas"`
+	EnableIngress bool   `json:"enable_ingress,omitempty"`
+	EnableService bool   `json:"enable_service"`
+	Domain        string `json:"domain"`
+	Token         string `json:"token"`
+	Dedicated     string `json:"Dedicated"`
 }
 
 // LobbyStatus defines the observed state of Lobby

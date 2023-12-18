@@ -1,16 +1,17 @@
 package utils
 
 import (
+	v1 "app-controller/api/v1"
 	"bytes"
-	"app-controller/api/v1"
+	"text/template"
+
 	appv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	netv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/util/yaml"
-	"text/template"
 )
 
-func parseTemplate(templateName string, app *v1.App) []byte {
+func parseTemplate(templateName string, app *v1.Lobby) []byte {
 	tmpl, err := template.ParseFiles("controllers/template/" + templateName + ".yml")
 	if err != nil {
 		panic(err)
@@ -23,7 +24,7 @@ func parseTemplate(templateName string, app *v1.App) []byte {
 	return b.Bytes()
 }
 
-func NewDeployment(app *v1.App) *appv1.Deployment {
+func NewDeployment(app *v1.Lobby) *appv1.Deployment {
 	d := &appv1.Deployment{}
 	err := yaml.Unmarshal(parseTemplate("deployment", app), d)
 	if err != nil {
@@ -32,7 +33,7 @@ func NewDeployment(app *v1.App) *appv1.Deployment {
 	return d
 }
 
-func NewIngress(app *v1.App) *netv1.Ingress {
+func NewIngress(app *v1.Lobby) *netv1.Ingress {
 	i := &netv1.Ingress{}
 	err := yaml.Unmarshal(parseTemplate("ingress", app), i)
 	if err != nil {
@@ -41,7 +42,7 @@ func NewIngress(app *v1.App) *netv1.Ingress {
 	return i
 }
 
-func NewService(app *v1.App) *corev1.Service {
+func NewService(app *v1.Lobby) *corev1.Service {
 	s := &corev1.Service{}
 	err := yaml.Unmarshal(parseTemplate("service", app), s)
 	if err != nil {
