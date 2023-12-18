@@ -34,6 +34,8 @@ spec:
           spec:
             description: LobbySpec defines the desired state of Lobby
             properties:
+              Dedicated:
+                type: string
               domain:
                 type: string
               enable_ingress:
@@ -49,6 +51,7 @@ spec:
               token:
                 type: string
             required:
+            - Dedicated
             - domain
             - enable_service
             - image
