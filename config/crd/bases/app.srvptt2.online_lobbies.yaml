@@ -34,6 +34,8 @@ spec:
           spec:
             description: LobbySpec defines the desired state of Lobby
             properties:
+              domain:
+                type: string
               enable_ingress:
                 type: boolean
               enable_service:
@@ -44,13 +46,14 @@ spec:
                 type: string
               replicas:
                 type: integer
-              string:
+              token:
                 type: string
             required:
+            - domain
             - enable_service
             - image
             - replicas
-            - string
+            - token
             type: object
           status:
             description: LobbyStatus defines the observed state of Lobby

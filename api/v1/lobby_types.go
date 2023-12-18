@@ -33,8 +33,8 @@ type LobbySpec struct {
 	Replicas int `json:"replicas"`
 	EnableIngress bool `json:"enable_ingress,omitempty"`
 	EnableService bool `json:"enable_service"`
-	Domain string `json:"string"`
-	Token string  `json:"string"`
+	Domain string `json:"domain"`
+	Token string  `json:"token"`
 }
 
 // LobbyStatus defines the observed state of Lobby
