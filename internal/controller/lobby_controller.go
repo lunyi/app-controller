@@ -40,6 +40,9 @@ type LobbyReconciler struct {
 }
 
 //+kubebuilder:rbac:groups=app.srvptt2.online,resources=lobbies,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=networking.k8s.io,resources=ingresses,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups="",resources=service,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=app.srvptt2.online,resources=lobbies/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=app.srvptt2.online,resources=lobbies/finalizers,verbs=update
 
@@ -56,6 +59,9 @@ func (r *LobbyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	_ = log.FromContext(ctx)
 
 	logger := log.FromContext(ctx)
+
+	logger.Info("Start LobbyController")
+
 	app := &appv1.Lobby{}
 	//从缓存中获取app
 	if err := r.Get(ctx, req.NamespacedName, app); err != nil {
