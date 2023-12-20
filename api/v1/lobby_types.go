@@ -34,7 +34,7 @@ type LobbySpec struct {
 	EnableService bool   `json:"enable_service"`
 	Domain        string `json:"domain"`
 	Token         string `json:"token"`
-	Dedicated     string `json:"Dedicated"`
+	Dedicated     string `json:"dedicated,omitempty"`
 }
 
 // LobbyStatus defines the observed state of Lobby
@@ -44,7 +44,7 @@ type LobbyStatus struct {
 	Image     string `json:"image"`
 	Replicas  int    `json:"replicas"`
 	Domain    string `json:"domain"`
-	Dedicated string `json:"Dedicated"`
+	Dedicated string `json:"dedicated"`
 }
 
 //+kubebuilder:object:root=true
