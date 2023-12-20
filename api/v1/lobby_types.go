@@ -42,6 +42,10 @@ type LobbySpec struct {
 type LobbyStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	Image     string `json:"image"`
+	Replicas  int    `json:"replicas"`
+	Domain    string `json:"domain"`
+	Dedicated string `json:"Dedicated"`
 }
 
 //+kubebuilder:object:root=true
