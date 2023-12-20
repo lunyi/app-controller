@@ -14,7 +14,20 @@ spec:
     singular: lobby
   scope: Namespaced
   versions:
-  - name: v1
+  - additionalPrinterColumns:
+    - jsonPath: .metadata.name
+      name: Name
+      type: string
+    - jsonPath: .spec.Image
+      name: Image
+      type: string
+    - jsonPath: .spec.Domain
+      name: Domain
+      type: string
+    - jsonPath: .spec.Dedicated
+      name: Dedicated
+      type: string
+    name: v1
     schema:
       openAPIV3Schema:
         description: Lobby is the Schema for the lobbies API
@@ -32,7 +45,10 @@ spec:
           metadata:
             type: object
           spec:
-            description: LobbySpec defines the desired state of Lobby
+            description: 'EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN! NOTE:
+              json tags are required.  Any new fields you add must have json tags
+              for the fields to be serialized. LobbySpec defines the desired state
+              of Lobby'
             properties:
               Dedicated:
                 type: string
@@ -60,6 +76,23 @@ spec:
             type: object
           status:
             description: LobbyStatus defines the observed state of Lobby
+            properties:
+              Dedicated:
+                type: string
+              domain:
+                type: string
+              image:
+                description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
+                  of cluster Important: Run "make" to regenerate code after modifying
+                  this file'
+                type: string
+              replicas:
+                type: integer
+            required:
+            - Dedicated
+            - domain
+            - image
+            - replicas
             type: object
         type: object
     served: true
