@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+iVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -78,7 +78,7 @@ spec:
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
-      {{if .Spec.Dedicated}}  
+        #      {{if .Spec.Dedicated}}  
       nodeSelector:
         dedicated:  {{.Spec.Dedicated}}
       tolerations:
@@ -86,7 +86,7 @@ spec:
         key:  {{.Spec.Dedicated}}
         operator: Equal
         value: frontend
-      {{end}}
+          #      {{end}}
       volumes:
       - emptyDir: {}
         name: site-data

@@ -18,13 +18,13 @@ spec:
     - jsonPath: .metadata.name
       name: Name
       type: string
-    - jsonPath: .spec.Image
+    - jsonPath: .spec.image
       name: Image
       type: string
-    - jsonPath: .spec.Domain
+    - jsonPath: .spec.domain
       name: Domain
       type: string
-    - jsonPath: .spec.Dedicated
+    - jsonPath: .spec.dedicated
       name: Dedicated
       type: string
     name: v1

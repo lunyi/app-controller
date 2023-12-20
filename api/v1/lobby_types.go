@@ -52,9 +52,9 @@ type LobbyStatus struct {
 
 // Lobby is the Schema for the lobbies API
 // +kubebuilder:printcolumn:name="Name",type=string,JSONPath=`.metadata.name`
-// +kubebuilder:printcolumn:name="Image",type=string,JSONPath=`.spec.Image`
-// +kubebuilder:printcolumn:name="Domain",type=string,JSONPath=`.spec.Domain`
-// +kubebuilder:printcolumn:name="Dedicated",type=string,JSONPath=`.spec.Dedicated`
+// +kubebuilder:printcolumn:name="Image",type=string,JSONPath=`.spec.image`
+// +kubebuilder:printcolumn:name="Domain",type=string,JSONPath=`.spec.domain`
+// +kubebuilder:printcolumn:name="Dedicated",type=string,JSONPath=`.spec.dedicated`
 // +kubebuilder:subresource:status
 type Lobby struct {
 	metav1.TypeMeta   `json:",inline"`
