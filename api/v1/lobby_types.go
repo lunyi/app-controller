@@ -24,6 +24,10 @@ import (
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 // LobbySpec defines the desired state of Lobby
+// +kubebuilder:printcolumn:name="Name",type=string,JSONPath=`.metadata.name`
+// +kubebuilder:printcolumn:name="Image",type=string,JSONPath=`.spec.Image`
+// +kubebuilder:printcolumn:name="Domain",type=string,JSONPath=`.spec.Domain`
+// +kubebuilder:printcolumn:name="Dedicated",type=string,JSONPath=`.spec.Dedicated`
 type LobbySpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
