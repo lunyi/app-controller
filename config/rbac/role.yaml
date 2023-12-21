@@ -74,12 +74,15 @@ rules:
   - get
   - patch
   - update
+  - watch
   - list
 - apiGroups:
   - networking.k8s.io
   resources:
   - ingresses
   verbs:
+  - list
+  - watch
   - create
   - get
   - patch
@@ -89,6 +92,8 @@ rules:
   resources:
   - services
   verbs:
+  - list
+  - watch
   - create
   - get
   - patch
