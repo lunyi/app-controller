@@ -21,7 +21,8 @@ var (
 func parseTemplate(templateName string, app *v1.Lobby, log logr.Logger) []byte {
 	wd, err := os.Getwd()
 
-	log.Info("current folder:", wd)
+	log.Info("===current folder===")
+	log.Info(wd)
 
 	tmpl, err := template.ParseFiles("internal/controller/template/" + templateName + ".yml")
 	if err != nil {
