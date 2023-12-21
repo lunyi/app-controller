@@ -3,6 +3,8 @@ package utils
 import (
 	v1 "app-controller/api/v1"
 	"bytes"
+	"os"
+	"path/filepath"
 	"text/template"
 
 	"github.com/go-logr/logr"
@@ -18,7 +20,22 @@ var (
 )
 
 func parseTemplate(templateName string, app *v1.Lobby, log logr.Logger) []byte {
-	tmpl, err := template.ParseFiles("./controller/template/" + templateName + ".yml")
+
+	err := filepath.Walk("/", func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			log.Error(err, "Error")
+			return err
+		}
+
+		// Check if the path corresponds to a regular file (not a directory)
+		if !info.IsDir() {
+			log.Info(path)
+		}
+
+		return nil
+	})
+
+	tmpl, err := template.ParseFiles("controller/template/" + templateName + ".yml")
 	if err != nil {
 		panic(err)
 	}
