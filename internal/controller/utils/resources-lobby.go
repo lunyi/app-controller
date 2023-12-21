@@ -10,12 +10,22 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	netv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/util/yaml"
-	"sigs.k8s.io/controller-runtime/pkg/log"
+	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+)
+
+var (
+	setupLog = ctrl.Log.WithName("template")
 )
 
 func parseTemplate(templateName string, app *v1.Lobby) []byte {
 	wd, err := os.Getwd()
-	log.Log.Info("current folder:", wd)
+
+	opts := zap.Options{
+		Development: true,
+	}
+	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
+	setupLog.Info("current folder:", wd)
 
 	tmpl, err := template.ParseFiles("internal/controller/template/" + templateName + ".yml")
 	if err != nil {
