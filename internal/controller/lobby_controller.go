@@ -92,8 +92,14 @@ func (r *LobbyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		//      手动删除Deployment等后能够自动重建，但正常不会出现这种情况，是否需要根据情况而定
 		//方式2. 加上判断条件，仅在app.Spec.Replicas != deployment.Spec.Replicas &&
 		//      app.Spec.Image != deployment.Spec.Template.Spec.Containers[0].Image时才更新deployment
-		if err := r.Update(ctx, deployment); err != nil {
-			return ctrl.Result{}, err
+
+		if app.Spec.Replicas != int(*deployment.Spec.Replicas) &&
+			app.Spec.Image != deployment.Spec.Template.Spec.Containers[0].Image {
+
+			if err := r.Update(ctx, deployment); err != nil {
+				return ctrl.Result{}, err
+
+			}
 		}
 	}
 
