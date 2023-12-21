@@ -32,6 +32,7 @@ func searchFile(rootDir, targetFile string, log logr.Logger) (string, error) {
 			return nil // skip directories
 		}
 
+		log.Info(info.Name())
 		if info.Name() == targetFile {
 			foundFilePath = path
 			return fmt.Errorf("file found") // stop walking
