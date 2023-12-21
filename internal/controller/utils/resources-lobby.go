@@ -6,26 +6,22 @@ import (
 	"os"
 	"text/template"
 
+	"github.com/go-logr/logr"
 	appv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	netv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/util/yaml"
 	ctrl "sigs.k8s.io/controller-runtime"
-	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
 
 var (
 	setupLog = ctrl.Log.WithName("template")
 )
 
-func parseTemplate(templateName string, app *v1.Lobby) []byte {
+func parseTemplate(templateName string, app *v1.Lobby, log logr.Logger) []byte {
 	wd, err := os.Getwd()
 
-	opts := zap.Options{
-		Development: true,
-	}
-	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
-	setupLog.Info("current folder:", wd)
+	log.Info("current folder:", wd)
 
 	tmpl, err := template.ParseFiles("internal/controller/template/" + templateName + ".yml")
 	if err != nil {
@@ -39,27 +35,27 @@ func parseTemplate(templateName string, app *v1.Lobby) []byte {
 	return b.Bytes()
 }
 
-func NewDeployment(app *v1.Lobby) *appv1.Deployment {
+func NewDeployment(app *v1.Lobby, log logr.Logger) *appv1.Deployment {
 	d := &appv1.Deployment{}
-	err := yaml.Unmarshal(parseTemplate("deployment", app), d)
+	err := yaml.Unmarshal(parseTemplate("deployment", app, log), d)
 	if err != nil {
 		panic(err)
 	}
 	return d
 }
 
-func NewIngress(app *v1.Lobby) *netv1.Ingress {
+func NewIngress(app *v1.Lobby, log logr.Logger) *netv1.Ingress {
 	i := &netv1.Ingress{}
-	err := yaml.Unmarshal(parseTemplate("ingress", app), i)
+	err := yaml.Unmarshal(parseTemplate("ingress", app, log), i)
 	if err != nil {
 		panic(err)
 	}
 	return i
 }
 
-func NewService(app *v1.Lobby) *corev1.Service {
+func NewService(app *v1.Lobby, log logr.Logger) *corev1.Service {
 	s := &corev1.Service{}
-	err := yaml.Unmarshal(parseTemplate("service", app), s)
+	err := yaml.Unmarshal(parseTemplate("service", app, log), s)
 	if err != nil {
 		panic(err)
 	}

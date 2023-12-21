@@ -70,7 +70,7 @@ func (r *LobbyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 
 	//根据app的配置进行处理
 	//1. Deployment的处理
-	deployment := utils.NewDeployment(app)
+	deployment := utils.NewDeployment(app, logger)
 	if err := controllerutil.SetControllerReference(app, deployment, r.Scheme); err != nil {
 		return ctrl.Result{}, err
 	}
