@@ -26,13 +26,16 @@ func parseTemplate(templateName string, app *v1.Lobby, log logr.Logger) []byte {
 		log.Info(err.Error())
 	}
 
+	log.Info("===exePath===")
+	log.Info(exePath)
+
 	absPath, err := filepath.Abs(exePath)
 	if err != nil {
 		log.Info("转换为绝对路径失败:", err)
 		log.Info(err.Error())
 	}
 
-	log.Info("===current folder===")
+	log.Info("===absPath===")
 	log.Info(absPath)
 
 	tmpl, err := template.ParseFiles("internal/controller/template/" + templateName + ".yml")
