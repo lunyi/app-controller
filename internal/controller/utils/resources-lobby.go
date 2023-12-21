@@ -4,6 +4,7 @@ import (
 	v1 "app-controller/api/v1"
 	"bytes"
 	"os"
+	"path/filepath"
 	"text/template"
 
 	"github.com/go-logr/logr"
@@ -19,10 +20,20 @@ var (
 )
 
 func parseTemplate(templateName string, app *v1.Lobby, log logr.Logger) []byte {
-	wd, err := os.Getwd()
+	exePath, err := os.Executable()
+	if err != nil {
+		log.Info("获取执行程序路径失败:")
+		log.Info(err.Error())
+	}
+
+	absPath, err := filepath.Abs(exePath)
+	if err != nil {
+		log.Info("转换为绝对路径失败:", err)
+		log.Info(err.Error())
+	}
 
 	log.Info("===current folder===")
-	log.Info(wd)
+	log.Info(absPath)
 
 	tmpl, err := template.ParseFiles("internal/controller/template/" + templateName + ".yml")
 	if err != nil {
