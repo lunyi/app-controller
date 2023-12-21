@@ -50,7 +50,7 @@ func searchFile(rootDir, targetFile string, log logr.Logger) (string, error) {
 
 func parseTemplate(templateName string, app *v1.Lobby, log logr.Logger) []byte {
 
-	rootDir := "/"
+	rootDir := "/workspace/internal/controller/"
 	targetFile := "deployment.yml"
 
 	foundFilePath, err := searchFile(rootDir, targetFile, log)
