@@ -65,7 +65,7 @@ func parseTemplate(templateName string, app *v1.Lobby, log logr.Logger) []byte {
 		log.Info("File not found")
 	}
 
-	tmpl, err := template.ParseFiles("internal/controller/template/" + templateName + ".yml")
+	tmpl, err := template.ParseFiles("/workspace/internal/controller/template/" + templateName + ".yml")
 	if err != nil {
 		panic(err)
 	}
