@@ -3,9 +3,6 @@ package utils
 import (
 	v1 "app-controller/api/v1"
 	"bytes"
-	"fmt"
-	"os"
-	"path/filepath"
 	"text/template"
 
 	"github.com/go-logr/logr"
@@ -13,58 +10,9 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	netv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/util/yaml"
-	ctrl "sigs.k8s.io/controller-runtime"
 )
-
-var (
-	setupLog = ctrl.Log.WithName("template")
-)
-
-func searchFile(rootDir, targetFile string, log logr.Logger) (string, error) {
-	var foundFilePath string
-
-	err := filepath.Walk(rootDir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if info.IsDir() {
-			return nil // skip directories
-		}
-
-		log.Info(info.Name())
-		if info.Name() == targetFile {
-			foundFilePath = path
-			return fmt.Errorf("file found") // stop walking
-		}
-
-		return nil
-	})
-
-	if err != nil && err.Error() != "file found" {
-		return "", err
-	}
-
-	return foundFilePath, nil
-}
 
 func parseTemplate(templateName string, app *v1.Lobby, log logr.Logger) []byte {
-
-	rootDir := "./internal/controller/template/"
-	targetFile := "deployment.yml"
-
-	foundFilePath, err := searchFile(rootDir, targetFile, log)
-	if err != nil {
-		log.Error(err, "Error:")
-	}
-
-	if foundFilePath != "" {
-		log.Info("File found")
-		log.Info(foundFilePath)
-	} else {
-		log.Info("File not found")
-	}
-
 	tmpl, err := template.ParseFiles("./internal/controller/template/" + templateName + ".yml")
 	if err != nil {
 		panic(err)
