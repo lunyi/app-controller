@@ -158,7 +158,7 @@ func createService(
 		}
 	} else {
 		if app.Spec.EnableService {
-			logger.Info("skip update")
+			logger.Info("skip update service")
 		} else {
 			if err := r.Delete(ctx, s); err != nil {
 				return ctrl.Result{}, err
@@ -192,7 +192,7 @@ func createIngress(
 		}
 	} else {
 		if app.Spec.EnableIngress {
-			logger.Info("skip update")
+			logger.Info("skip update ingress")
 		} else {
 			if err := r.Delete(ctx, i); err != nil {
 				return ctrl.Result{}, err
