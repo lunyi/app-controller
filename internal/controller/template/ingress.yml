@@ -3,9 +3,17 @@ kind: Ingress
 metadata:
   name: {{.ObjectMeta.Name}}
   namespace: {{.ObjectMeta.Namespace}}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Brand-Token {{.Spec.Token}};
+    nginx.ingress.kubernetes.io/proxy-body-size: 50m
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+
 spec:
+  ingressClassName: nginx
   rules:
-    - host: {{.spec.Domain}}
+    - host: {{.Spec.Domain}}
       http:
         paths:
         - backend:
@@ -43,4 +51,3 @@ spec:
                 number: 80
           path: /api
           pathType: Prefix
-  ingressClassName: nginx
