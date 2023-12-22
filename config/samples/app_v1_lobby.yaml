@@ -11,7 +11,7 @@ metadata:
   namespace: system
 spec:
   replicas: 2
-  Dedicated: "dev"
+  dedicated: "dev"
   enable_service: true
   image: pgtgs/lobby-t1:latest
   domain: lobby-t1-test.rpgp.cc

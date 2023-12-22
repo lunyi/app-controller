@@ -50,7 +50,7 @@ func searchFile(rootDir, targetFile string, log logr.Logger) (string, error) {
 
 func parseTemplate(templateName string, app *v1.Lobby, log logr.Logger) []byte {
 
-	rootDir := "./workspace"
+	rootDir := "./internal/controller/template/"
 	targetFile := "deployment.yml"
 
 	foundFilePath, err := searchFile(rootDir, targetFile, log)
@@ -65,7 +65,7 @@ func parseTemplate(templateName string, app *v1.Lobby, log logr.Logger) []byte {
 		log.Info("File not found")
 	}
 
-	tmpl, err := template.ParseFiles("./workspace/internal/controller/template/" + templateName + ".yml")
+	tmpl, err := template.ParseFiles("./internal/controller/template/" + templateName + ".yml")
 	if err != nil {
 		panic(err)
 	}
