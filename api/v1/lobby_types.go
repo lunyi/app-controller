@@ -28,13 +28,13 @@ type LobbySpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of Lobby. Edit lobby_types.go to remove/update
-	Image         string `json:"image"`
-	Replicas      int    `json:"replicas"`
-	EnableIngress bool   `json:"enable_ingress,omitempty"`
-	EnableService bool   `json:"enable_service"`
-	Domain        string `json:"domain"`
-	Token         string `json:"token"`
-	Dedicated     string `json:"dedicated,omitempty"`
+	Image         string   `json:"image"`
+	Replicas      int      `json:"replicas"`
+	EnableIngress bool     `json:"enable_ingress,omitempty"`
+	EnableService bool     `json:"enable_service"`
+	Domains       []string `json:"domains"`
+	Token         string   `json:"token"`
+	Dedicated     string   `json:"dedicated,omitempty"`
 }
 
 // LobbyStatus defines the observed state of Lobby
@@ -43,7 +43,6 @@ type LobbyStatus struct {
 	// Important: Run "make" to regenerate code after modifying this file
 	Image     string `json:"image"`
 	Replicas  int    `json:"replicas"`
-	Domain    string `json:"domain"`
 	Dedicated string `json:"dedicated"`
 }
 
@@ -53,7 +52,6 @@ type LobbyStatus struct {
 // Lobby is the Schema for the lobbies API
 // +kubebuilder:printcolumn:name="Name",type=string,JSONPath=`.metadata.name`
 // +kubebuilder:printcolumn:name="Image",type=string,JSONPath=`.spec.image`
-// +kubebuilder:printcolumn:name="Domain",type=string,JSONPath=`.spec.domain`
 // +kubebuilder:printcolumn:name="Dedicated",type=string,JSONPath=`.spec.dedicated`
 // +kubebuilder:subresource:status
 type Lobby struct {
