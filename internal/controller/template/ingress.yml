@@ -13,7 +13,8 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: {{.Spec.Domain}}
+    {{ range .Spec.Domains}}
+    - host: {{.}}
       http:
         paths:
         - backend:
@@ -51,3 +52,4 @@ spec:
                 number: 80
           path: /api
           pathType: Prefix
+    {{end}}      
