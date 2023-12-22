@@ -12,7 +12,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: $lobby
+      app: {{.ObjectMeta.Name}}
   strategy:
     rollingUpdate:
       maxSurge: 25%
