@@ -19,15 +19,18 @@ package controller
 import (
 	"context"
 
+	"github.com/go-logr/logr"
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	netv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
+	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	appv1 "app-controller/api/v1"
 	"app-controller/internal/controller/utils"
@@ -68,8 +71,44 @@ func (r *LobbyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
-	//根据app的配置进行处理
-	//1. Deployment的处理
+	res, err := createDeployment(app, logger, r, ctx, &req)
+
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	res, err = createService(app, logger, r, ctx)
+
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	res, err = createIngress(app, logger, r, ctx)
+
+	if err != nil {
+		return ctrl.Result{}, err
+	}
+
+	return res, nil
+}
+
+// SetupWithManager sets up the controller with the Manager.
+func (r *LobbyReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	return ctrl.NewControllerManagedBy(mgr).
+		For(&appv1.Lobby{}).
+		Owns(&v1.Deployment{}).
+		Owns(&netv1.Ingress{}).
+		Owns(&corev1.Service{}).
+		Complete(r)
+}
+
+func createDeployment(
+	app *appv1.Lobby,
+	logger logr.Logger,
+	r *LobbyReconciler,
+	ctx context.Context,
+	req *reconcile.Request) (ctrl.Result, error) {
+
 	deployment := utils.NewDeployment(app, logger)
 	if err := controllerutil.SetControllerReference(app, deployment, r.Scheme); err != nil {
 		return ctrl.Result{}, err
@@ -84,34 +123,82 @@ func (r *LobbyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 			}
 		}
 	} else {
-		//Bug: 这里会反复触发更新
-		//原因：在148行SetupWithManager方法中，监听了Deployment，所以只要更新Deployment就会触发
-		//     此处更新和controllerManager更新Deployment都会触发更新事件，导致循环触发
-		//修复方法：
-		//方式1. 注释掉在148行SetupWithManager方法中对Deployment，Ingress，Service等的监听，该处的处理只是为了
-		//      手动删除Deployment等后能够自动重建，但正常不会出现这种情况，是否需要根据情况而定
-		//方式2. 加上判断条件，仅在app.Spec.Replicas != deployment.Spec.Replicas &&
-		//      app.Spec.Image != deployment.Spec.Template.Spec.Containers[0].Image时才更新deployment
-
 		if app.Spec.Replicas != int(*deployment.Spec.Replicas) &&
 			app.Spec.Image != deployment.Spec.Template.Spec.Containers[0].Image {
 
 			if err := r.Update(ctx, deployment); err != nil {
 				return ctrl.Result{}, err
+			}
+		}
+	}
+	return ctrl.Result{}, nil
+}
 
+func createService(
+	app *appv1.Lobby,
+	logger logr.Logger,
+	r *LobbyReconciler,
+	ctx context.Context) (ctrl.Result, error) {
+
+	service := utils.NewService(app, logger)
+	if err := controllerutil.SetControllerReference(app, service, r.Scheme); err != nil {
+		return ctrl.Result{}, err
+	}
+
+	s := &corev1.Service{}
+	if err := r.Get(ctx, types.NamespacedName{Name: app.Name, Namespace: app.Namespace}, s); err != nil {
+		if errors.IsNotFound(err) && app.Spec.EnableService {
+			if err := r.Create(ctx, service); err != nil {
+				logger.Error(err, "create service failed")
+				return ctrl.Result{}, err
+			}
+		}
+		if !errors.IsNotFound(err) && app.Spec.EnableService {
+			return ctrl.Result{}, err
+		}
+	} else {
+		if app.Spec.EnableService {
+			logger.Info("skip update")
+		} else {
+			if err := r.Delete(ctx, s); err != nil {
+				return ctrl.Result{}, err
+			}
+
+		}
+	}
+	return ctrl.Result{}, nil
+}
+
+func createIngress(
+	app *appv1.Lobby,
+	logger logr.Logger,
+	r *LobbyReconciler, // Assuming r is an instance of LobbyReconciler
+	ctx context.Context,
+) (ctrl.Result, error) { // Fixing return type to ctrl.Result and error
+	ingress := utils.NewIngress(app, logger)
+	if err := controllerutil.SetControllerReference(app, ingress, r.Scheme); err != nil {
+		return ctrl.Result{}, err
+	}
+	i := &netv1.Ingress{}
+	if err := r.Get(ctx, types.NamespacedName{Name: app.Name, Namespace: app.Namespace}, i); err != nil {
+		if errors.IsNotFound(err) && app.Spec.EnableIngress {
+			if err := r.Create(ctx, ingress); err != nil {
+				logger.Error(err, "create ingress failed")
+				return ctrl.Result{}, err
+			}
+		}
+		if !errors.IsNotFound(err) && app.Spec.EnableIngress {
+			return ctrl.Result{}, err
+		}
+	} else {
+		if app.Spec.EnableIngress {
+			logger.Info("skip update")
+		} else {
+			if err := r.Delete(ctx, i); err != nil {
+				return ctrl.Result{}, err
 			}
 		}
 	}
 
 	return ctrl.Result{}, nil
-}
-
-// SetupWithManager sets up the controller with the Manager.
-func (r *LobbyReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	return ctrl.NewControllerManagedBy(mgr).
-		For(&appv1.Lobby{}).
-		Owns(&v1.Deployment{}).
-		Owns(&netv1.Ingress{}).
-		Owns(&corev1.Service{}).
-		Complete(r)
 }
