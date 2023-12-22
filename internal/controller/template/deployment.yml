@@ -79,6 +79,7 @@ spec:
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
+      {{if .Spec.Dedicated}}  
       nodeSelector:
         dedicated:  {{.Spec.Dedicated}}
       tolerations:
@@ -86,6 +87,7 @@ spec:
         key: dedicated 
         operator: Equal
         value: {{.Spec.Dedicated}}
+      {{end}}
       volumes:
       - emptyDir: {}
         name: site-data
